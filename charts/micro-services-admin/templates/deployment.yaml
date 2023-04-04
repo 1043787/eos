@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eos-micro-services-admin
+  labels:
+    app: eos-micro-services-admin
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: eos-micro-services-admin
+  template:
+    metadata:
+      labels:
+        app: eos-micro-services-admin
+    spec:
+      containers:
+      - name: eos-micro-services-admin
+        image: {{ .Values.deployment.image }} 
+        ports:
+        - containerPort: 8090
+        readinessProbe:
+          tcpSocket:
+            port: 8090
+        livenessProbe:
+          tcpSocket:
+            port: 8090
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
