@@ -5,13 +5,13 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: build
+    name: build
   annotations:
     sidecar.istio.io/inject: "false"
 spec:
   containers:
   - name: build
-    image: dpthub/eos-jen-node-build-agent
+    image: dpthub/dtp8-jenkins-agent
     command:
     - cat
     tty: true
@@ -26,33 +26,19 @@ spec:
 ) {
     node (label) {
         stage ('Checkout SCM'){
-          git credentialsId: 'git', url: 'https://dptrealtime@bitbucket.org/dptrealtime/eos-micro-services-admin.git', branch: 'master'
+          git credentialsId: 'git', url: 'https://dptrealtime@bitbucket.org/dptrealtime/eos-micro-services-admin-source.git', branch: 'master'
           container('build') {
                 stage('Build a Maven project') {
-                  //withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ) {
-                   //sh "mvn clean package"
-                  //  }
                   sh './mvnw clean package' 
-                   //sh 'mvn clean package'
                 }
             }
         }
-        stage ('Sonar Scan'){
-          container('build') {
-                stage('Sonar Scan') {
-                  withSonarQubeEnv('sonar') {
-                  sh './mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=dpt7'
-                }
-                }
-            }
-        }
-
         stage ('Artifactory configuration'){
           container('build') {
                 stage('Artifactory configuration') {
                     rtServer (
                     id: "jfrog",
-                    url: "https://edproject.jfrog.io/artifactory",
+                    url: "https://dpt8binary.jfrog.io/artifactory",
                     credentialsId: "jfrog"
                 )
 
@@ -111,7 +97,7 @@ spec:
             dir('charts') {
               withCredentials([usernamePassword(credentialsId: 'jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
               sh '/usr/local/bin/helm package micro-services-admin'
-              sh '/usr/local/bin/helm push-artifactory micro-services-admin-1.0.tgz https://edproject.jfrog.io/artifactory/dpt7-helm-local --username $username --password $password'
+              sh '/usr/local/bin/helm push-artifactory micro-services-admin-1.0.tgz https://dpt8binary.jfrog.io/artifactory/dpt8-helm-local --username $username --password $password'
               }
             }
         }
