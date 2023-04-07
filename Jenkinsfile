@@ -9,10 +9,6 @@ metadata:
   annotations:
     sidecar.istio.io/inject: "false"
 spec:
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 3000
-    fsGroup: 2000
   containers:
   - name: build
     image: dpthub/dtp8-jenkins-agent
