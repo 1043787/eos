@@ -33,6 +33,18 @@ spec:
                 }
             }
         }
+
+        stage ('Sonar Scan'){
+          container('build') {
+                stage('Sonar Scan') {
+                  withSonarQubeEnv('sonar') {
+                  sh './mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=micro-services-admin'
+                }
+                }
+            }
+        }
+
+
         stage ('Artifactory configuration'){
           container('build') {
                 stage('Artifactory configuration') {
