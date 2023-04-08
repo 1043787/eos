@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   name: eos-micro-services-admin
   labels:
-    app: eos-micro-services-admin
-    spec-template-metadata-annotations: 
+    app: eos-micro-services-admin 
 spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
