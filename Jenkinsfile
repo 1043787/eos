@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
   - name: build
-    image: dpthub/dtp8-jenkins-agent
+    image: dpthub/dpt10jenkinsagent
     command:
     - cat
     tty: true
@@ -38,7 +38,7 @@ spec:
           container('build') {
                 stage('Sonar Scan') {
                   withSonarQubeEnv('sonar') {
-                  sh './mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=micro-services-admin'
+                  sh './mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=edwi_eosadmin'
                 }
                 }
             }
@@ -50,7 +50,7 @@ spec:
                 stage('Artifactory configuration') {
                     rtServer (
                     id: "jfrog",
-                    url: "https://dpt8binary.jfrog.io/artifactory",
+                    url: "https://eddpt10.jfrog.io/artifactory",
                     credentialsId: "jfrog"
                 )
 
@@ -109,7 +109,7 @@ spec:
             dir('charts') {
               withCredentials([usernamePassword(credentialsId: 'jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
               sh '/usr/local/bin/helm package micro-services-admin'
-              sh '/usr/local/bin/helm push-artifactory micro-services-admin-1.0.tgz https://dpt8binary.jfrog.io/artifactory/dpt8-helm-local --username $username --password $password'
+              sh '/usr/local/bin/helm push-artifactory micro-services-admin-1.0.tgz https://eddpt10.jfrog.io/artifactory/eos-helm-local --username $username --password $password'
               }
             }
         }

@@ -10,13 +10,13 @@
 	</parent>
 	<groupId>com.segman.tech</groupId>
 	<artifactId>ether</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-RELEASE</version>
 	<name>ether</name>
 	<description>Admin Tool Health Check Tool</description>
 	<properties>
 		<java.version>11</java.version>
 		<spring-boot-admin.version>2.6.5</spring-boot-admin.version>
-        <sonar.organization>dpt3pro</sonar.organization>
+        <sonar.organization>edwi</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
