@@ -11,7 +11,7 @@ metadata:
 spec:
   containers:
   - name: build
-    image: dpthub/dpt10jenkinsagent
+    image: chintn1/finaldockeragent
     command:
     - cat
     tty: true
@@ -26,7 +26,7 @@ spec:
 ) {
     node (label) {
         stage ('Checkout SCM'){
-          git credentialsId: 'git', url: 'https://dptrealtime@bitbucket.org/dptrealtime/eos-micro-services-admin-source.git', branch: 'master'
+          git credentialsId: 'github', url: 'https://dptrealtime@bitbucket.org/dptrealtime/eos-micro-services-admin-source.git', branch: 'master'
           container('build') {
                 stage('Build a Maven project') {
                   sh './mvnw clean package' 
@@ -38,7 +38,7 @@ spec:
           container('build') {
                 stage('Sonar Scan') {
                   withSonarQubeEnv('sonar') {
-                  sh './mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=edwi_eosadmin'
+                  sh './mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=chintn1_eosadmin'
                 }
                 }
             }
@@ -50,22 +50,22 @@ spec:
                 stage('Artifactory configuration') {
                     rtServer (
                     id: "jfrog",
-                    url: "https://eddpt10.jfrog.io/artifactory",
+                    url: "https://chintn1.jfrog.io/artifactory",
                     credentialsId: "jfrog"
                 )
 
                 rtMavenDeployer (
                     id: "MAVEN_DEPLOYER",
                     serverId: "jfrog",
-                    releaseRepo: "libs-release-local",
-                    snapshotRepo: "libs-snapshot-local"
+                    releaseRepo: "maven-libs-release-local",
+                    snapshotRepo: "maven-libs-snapshot-local"
                 )
 
                 rtMavenResolver (
                     id: "MAVEN_RESOLVER",
                     serverId: "jfrog",
-                    releaseRepo: "libs-release",
-                    snapshotRepo: "libs-snapshot"
+                    releaseRepo: "maven-libs-release",
+                    snapshotRepo: "maven-libs-snapshot"
                 )            
                 }
             }
@@ -109,7 +109,7 @@ spec:
             dir('charts') {
               withCredentials([usernamePassword(credentialsId: 'jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
               sh '/usr/local/bin/helm package micro-services-admin'
-              sh '/usr/local/bin/helm push-artifactory micro-services-admin-1.0.tgz https://eddpt10.jfrog.io/artifactory/eos-helm-local --username $username --password $password'
+              sh '/usr/local/bin/helm push-artifactory micro-services-admin-1.0.tgz https://chintn1.jfrog.io/artifactory/helm-helm-local --username $username --password $password'
               }
             }
         }
@@ -122,7 +122,7 @@ spec:
           stage ('Helm Chart') {
             container('build') {
                 withCredentials([usernamePassword(credentialsId: 'jfrog', usernameVariable: 'username', passwordVariable: 'password')]) {
-                      sh '/usr/local/bin/helm repo add eos-helm-local  https://eddpt10.jfrog.io/artifactory/eos-helm-local --username $username --password $password'
+                      sh '/usr/local/bin/helm repo add eos-helm-local  https://chintn1.jfrog.io/artifactory/helm-helm-local --username $username --password $password'
                       sh "/usr/local/bin/helm repo update"
                       sh "/usr/local/bin/helm upgrade  --install --force micro-services-admin  --namespace ${env} -f values.yaml eos-helm-local/micro-services-admin"
                       sh "/usr/local/bin/helm list -a --namespace ${env}"

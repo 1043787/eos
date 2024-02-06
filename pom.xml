@@ -16,8 +16,8 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-boot-admin.version>2.6.5</spring-boot-admin.version>
-        <sonar.organization>edwi</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>chintn1</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
