@@ -26,7 +26,7 @@ spec:
 ) {
     node (label) {
         stage ('Checkout SCM'){
-          git credentialsId: 'github', url: 'https://dptrealtime@bitbucket.org/dptrealtime/eos-micro-services-admin-source.git', branch: 'master'
+          git credentialsId: 'git', url: 'https://github.com/1043787/eos.git', branch: 'master'
           container('build') {
                 stage('Build a Maven project') {
                   sh './mvnw clean package' 
